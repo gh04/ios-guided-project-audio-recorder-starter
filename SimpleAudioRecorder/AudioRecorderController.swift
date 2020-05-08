@@ -233,9 +233,11 @@ class AudioRecorderController: UIViewController {
         do {
             audioRecorder = try AVAudioRecorder(url: recordingURL!, format: format)
             audioRecorder?.delegate = self
+            audioRecorder?.isMeteringEnabled = true
             audioRecorder?.record()
             updateViews()
             startTimer()
+            
         } catch {
             preconditionFailure("The audio recoder could not be created with: \(recordingURL!) and \(format)")
         }
