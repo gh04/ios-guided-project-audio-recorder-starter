@@ -7,8 +7,11 @@
 //
 
 import UIKit
+import AVFoundation
 
 class AudioRecorderController: UIViewController {
+    
+    var audioPlayer: AVAudioPlayer?
     
     @IBOutlet var playButton: UIButton!
     @IBOutlet var recordButton: UIButton!
@@ -84,6 +87,11 @@ class AudioRecorderController: UIViewController {
     func loadAudio() {
         let songURL = Bundle.main.url(forResource: "piano", withExtension: "mp3")!
         
+        do {
+           audioPlayer = try AVAudioPlayer(contentsOf: songURL)
+        } catch {
+            preconditionFailure("Failure to load audio file: \(error)")
+        }
         
     }
     
@@ -161,7 +169,7 @@ class AudioRecorderController: UIViewController {
     // MARK: - Actions
     
     @IBAction func togglePlayback(_ sender: Any) {
-        
+        audioPlayer?.play()
     }
     
     @IBAction func updateCurrentTime(_ sender: UISlider) {
