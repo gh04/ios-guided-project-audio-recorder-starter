@@ -17,6 +17,7 @@ class AudioRecorderController: UIViewController {
             
             audioPlayer.delegate = self
             audioPlayer.isMeteringEnabled = true
+            updateViews()
         }
     }
     //weak prevents retain cycles with timers
@@ -56,29 +57,31 @@ class AudioRecorderController: UIViewController {
                                                                    weight: .regular)
         
         loadAudio()
-        updateViews()
     }
     
     func updateViews() {
-        // Chaging the state of the view. Pause or playing symbol
+        playButton.isEnabled = !isRecording
+        recordButton.isEnabled = !isPlaying
+        timeSlider.isEnabled = !isRecording
         playButton.isSelected = isPlaying
-        
-        let elapsedTime = audioPlayer?.currentTime ?? 0
-        let duration = audioPlayer?.duration ?? 0
-        // use rounded() to fix the seconds updating at the same time in the bar
-        let timeRemaining = duration.rounded() - elapsedTime
-        
-        print("Elapsed is: \(elapsedTime)")
-        print("Remaing is: \(timeRemaining)")
-        
-        timeElapsedLabel.text = timeIntervalFormatter.string(from: elapsedTime)
-        
-        timeSlider.minimumValue = 0
-        timeSlider.maximumValue = Float(duration)
-        timeSlider.value = Float(elapsedTime)
-        
-        timeRemainingLabel.text = "-" + timeIntervalFormatter.string(from: timeRemaining)!
-        
+        recordButton.isSelected = isRecording
+        if !isRecording {
+            let elapsedTime = audioPlayer?.currentTime ?? 0
+            let duration = audioPlayer?.duration ?? 0
+            let timeRemaining = duration.rounded() - elapsedTime
+            timeElapsedLabel.text = timeIntervalFormatter.string(from: elapsedTime)
+            timeSlider.minimumValue = 0
+            timeSlider.maximumValue = Float(duration)
+            timeSlider.value = Float(elapsedTime)
+            timeRemainingLabel.text = "-" + timeIntervalFormatter.string(from: timeRemaining)!
+        } else {
+            let elapsedTime = audioRecorder?.currentTime ?? 0
+            timeElapsedLabel.text = "--:--"
+            timeSlider.minimumValue = 0
+            timeSlider.maximumValue = 1
+            timeSlider.value = 0
+            timeRemainingLabel.text = timeIntervalFormatter.string(from: elapsedTime)!
+        }
     }
     
     //destroying reference
@@ -237,6 +240,9 @@ class AudioRecorderController: UIViewController {
     }
     
     func stopRecording() {
+        audioRecorder?.stop()
+        updateViews()
+        cancelTimer()
         
     }
     
