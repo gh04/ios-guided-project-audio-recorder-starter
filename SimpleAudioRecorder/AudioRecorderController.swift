@@ -16,6 +16,7 @@ class AudioRecorderController: UIViewController {
             guard let audioPlayer = audioPlayer else { return }
             
             audioPlayer.delegate = self
+            audioPlayer.isMeteringEnabled = true
         }
     }
     //weak prevents retain cycles with timers
@@ -103,12 +104,12 @@ class AudioRecorderController: UIViewController {
 //
 //            }
 //
-//            if let audioPlayer = self.audioPlayer,
-//                self.isPlaying == true {
-//
-//                audioPlayer.updateMeters()
-//                self.audioVisualizer.addValue(decibelValue: audioPlayer.averagePower(forChannel: 0))
-//            }
+            if let audioPlayer = self.audioPlayer,
+                self.isPlaying == true {
+
+                audioPlayer.updateMeters()
+                self.audioVisualizer.addValue(decibelValue: audioPlayer.averagePower(forChannel: 0))
+            }
         }
     }
     
