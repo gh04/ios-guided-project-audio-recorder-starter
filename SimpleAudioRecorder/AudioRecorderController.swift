@@ -44,8 +44,14 @@ class AudioRecorderController: UIViewController {
                                                                    weight: .regular)
         
         loadAudio()
+        updateViews()
     }
     
+    func updateViews() {
+        // Chaging the state of the view. Pause or playing symbol
+        playButton.isSelected = isPlaying
+        
+    }
     
     // MARK: - Timer
     
@@ -109,6 +115,7 @@ class AudioRecorderController: UIViewController {
         do {
             try prepareAudioSession()
             audioPlayer?.play()
+            updateViews()
         } catch {
             // Better to use an alert for the user to know it failed
             print("Cannot play audio: \(error)")
@@ -118,6 +125,7 @@ class AudioRecorderController: UIViewController {
     
     func pause() {
         audioPlayer?.pause()
+        updateViews()
     }
     
     
